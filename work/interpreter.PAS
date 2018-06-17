@@ -209,5 +209,7 @@ end;
 begin
    Init;
    WriteLn(Expression);
+   ReadLn; { this closes expression's reads }
+   ReadLn; { this should pause for input and not close the app windows }
 end.
 {--------------------------------------------------------------}

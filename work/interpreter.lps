@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <PathDelim Value="\"/>
+    <Version Value="10"/>
+    <BuildModes Active="Default"/>
+    <Units Count="1">
+      <Unit0>
+        <Filename Value="interpreter.PAS"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Cradle"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="118"/>
+        <CursorPos Y="132"/>
+        <UsageCount Value="29"/>
+        <Loaded Value="True"/>
+      </Unit0>
+    </Units>
+    <JumpHistory Count="4" HistoryIndex="3">
+      <Position1>
+        <Filename Value="interpreter.PAS"/>
+        <Caret Line="195" Column="23" TopLine="181"/>
+      </Position1>
+      <Position2>
+        <Filename Value="interpreter.PAS"/>
+        <Caret Line="171" Column="27" TopLine="151"/>
+      </Position2>
+      <Position3>
+        <Filename Value="interpreter.PAS"/>
+        <Caret Line="157" Column="19" TopLine="137"/>
+      </Position3>
+      <Position4>
+        <Filename Value="interpreter.PAS"/>
+        <Caret Line="112" Column="10" TopLine="93"/>
+      </Position4>
+    </JumpHistory>
+  </ProjectSession>
+  <Debugging>
+    <Watches Count="2">
+      <Item1>
+        <Expression Value="Value"/>
+      </Item1>
+      <Item2>
+        <Expression Value="Term"/>
+      </Item2>
+    </Watches>
+  </Debugging>
+</CONFIG>
