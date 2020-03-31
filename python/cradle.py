@@ -3,9 +3,10 @@
 
 import sys
 
+#
 # globals
+#
 
-tab = "\t"
 look = ""
 
 #
@@ -68,6 +69,12 @@ def isalpha(c):
 #
 def isdigit(c):
     return c[0].isdigit()
+
+#
+# recognize an alphanumeric character
+#
+def isalnum(c):
+    return isalpha(c) or isdigit(c)
 
 #
 # recognize an addop

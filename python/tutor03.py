@@ -3,16 +3,18 @@
 
 import sys
 
+#
 # globals
-
-tab = "\t"
+#
 
 look = ""
 
 #
 # read next character
+#
 # whole lines are buffered when interactive, but
 # this still works
+#
 def getchar():
     global look     # <-- 
     look = sys.stdin.read(1)
@@ -21,23 +23,36 @@ def getchar():
         print("end of file")
 
 #
+# outputs
+#
+def emit(s):
+    sys.stdout.write("\t" + s)
+
+def emitln(s):
+    sys.stdout.write("\t" + s + "\n")
+
+#
 # report error
+#
 def error(s):
     print("\nError:  " + s + ".")
 
 #
 # report error and halt
+#
 def abort(s):
     error(s)
     sys.exit(-1)
 
 #
 # report a missing expected token
+#
 def expected(s):
     abort(s + " expected")
 
 #
 # match a specific input character
+#
 def match(x):
     if look == x:
         getchar()
@@ -46,34 +61,45 @@ def match(x):
 
 #
 # recognize an alpha character
-# todo: this name is from the original pascal
+#
+# this name is from the original pascal
 # version. it isn't really a collision with
-# the string and bytearray functions but i
-# should either rename or inline these.
+# the string and bytearray functions.
+#
 def isalpha(c):
     return c[0].isalpha()
 
 #
 # recognize a decimal digit
-# todo: this name is from the original pascal
+#
+# this name is from the original pascal
 # version. it isn't really a collision with
-# the string and bytearray functions but i
-# should either rename or inline these.
+# the string and bytearray functions.
+#
 def isdigit(c):
     return c[0].isdigit()
 
 #
+# recognize an alphanumeric
+#
+def isalnum(c):
+    return isalpha(c) or isdigit(c)
+
+#
 # recognize an addop
+#
 def isaddop(c):
     return c[0] in ["+", "-"]
 
 #
 # recognize a mulop
+#
 def ismulop(c):
     return c[0] in ["*", "/"]
 
 #
 # get an identifier
+#
 def getname():
     if not isalpha(look):
         expected("Name")
@@ -83,25 +109,13 @@ def getname():
 
 #
 # get a number
+#
 def getnum():
     if not isdigit(look):
         expected("Integer")
     n = look;
     getchar()
     return n
-
-#
-# outputs
-def emit(s):
-    sys.stdout.write("\t" + s)
-
-def emitln(s):
-    sys.stdout.write("\t" + s + "\n")
-
-#
-# initialization
-def init():
-    getchar();
 
 #
 # parse and translate an identifier
@@ -138,6 +152,7 @@ def factor():
 
 #
 # handle a multiply
+#
 def multiply():
     match("*")
     factor()
@@ -145,6 +160,7 @@ def multiply():
 
 #
 # handle a divide
+#
 def divide():
     match("/")
     factor()
@@ -169,6 +185,7 @@ def term():
 
 #
 # handle addition
+#
 def add():
     match("+")
     term()
@@ -176,6 +193,7 @@ def add():
 
 #
 # handle subtraction
+#
 def subtract():
     match("-")
     term()
@@ -213,6 +231,7 @@ def flawed_expression():
 # with "))", adding a +0, as in g()+0) works
 # but also seeing errors on m=3*(7+g) and
 # a few other forms that end in a right paren.
+#
 def expression():
     if isaddop(look):
         emitln("CLR D0")
@@ -241,24 +260,22 @@ def assignment():
     emitln("MOVE D0,(A0)")
 
 #
+# initialization
+#
+# just prime the character pump.
+#
+def init():
+    getchar();
+
+#
 # mainline
+#
 def main():
     init()
     assignment()
 
 #
-# test driver
-def testdriver():
-    sys.stdout.write(look)
-    while(look != "$"):
-        print(isalpha(look))
-        print(isdigit(look))
-        getchar()
-        sys.stdout.write(look)
-    
-    print("\ndone")
-
-#
 # run as script
+#
 if __name__ == "__main__":
     main()
