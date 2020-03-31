@@ -118,6 +118,40 @@ def getnum():
     return n
 
 #
+# handle a multiply
+#
+def multiply():
+    match("*")
+    factor()
+    emitln("MULS (SP)+,D0")
+
+#
+# handle a divide
+#
+def divide():
+    match("/")
+    factor()
+    emitln("MOVE (SP)+,D1")
+    emitln("DIVS D1,D0")
+
+#
+# handle addition
+#
+def add():
+    match("+")
+    term()
+    emitln("ADD (SP)+,D0")
+
+#
+# handle subtraction
+#
+def subtract():
+    match("-")
+    term()
+    emitln("SUB (SP)+,D0")
+    emitln("NEG D0")
+
+#
 # parse and translate an identifier
 # where:
 #
@@ -151,23 +185,6 @@ def factor():
         emitln("MOVE #" + getnum() + ",D0")
 
 #
-# handle a multiply
-#
-def multiply():
-    match("*")
-    factor()
-    emitln("MULS (SP)+,D0")
-
-#
-# handle a divide
-#
-def divide():
-    match("/")
-    factor()
-    emitln("MOVE (SP)+,D1")
-    emitln("DIVS D1,D0")
-
-#
 # parse and translate a term
 #
 # where:
@@ -184,42 +201,6 @@ def term():
             divide()
 
 #
-# handle addition
-#
-def add():
-    match("+")
-    term()
-    emitln("ADD (SP)+,D0")
-
-#
-# handle subtraction
-#
-def subtract():
-    match("-")
-    term()
-    emitln("SUB (SP)+,D0")
-    emitln("NEG D0")
-
-#
-# parse and translate an expression
-# where:
-#
-# <expression> ::= <term> <addop> <term>
-#
-def flawed_expression():
-    #emitln("; <<- expression")
-    term()
-    emitln("MOVE D0,D1")
-    # python does not have a case/switch statement
-    if look == "+":
-        add()
-    elif look == "-":
-        subtract()
-    else:
-        expected("addop")
-    #emitln("; -->> expression")
-
-#
 # parse and translate an expression
 # the prior version had an overly simplistic definition
 # of expression. a more correct definition is:
@@ -231,6 +212,16 @@ def flawed_expression():
 # with "))", adding a +0, as in g()+0) works
 # but also seeing errors on m=3*(7+g) and
 # a few other forms that end in a right paren.
+#
+# m=3*n works
+# m=3*n+7 works
+# m=(3*n)+7 fails
+#
+# so i'm right on the paren, and it appears
+# to be unrelated to the variable n in the
+# example, as
+#
+# m=(3*4)+7 also fails
 #
 def expression():
     if isaddop(look):

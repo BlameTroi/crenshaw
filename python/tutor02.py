@@ -118,20 +118,6 @@ def getnum():
     return n
 
 #
-# parse and translate a factor
-# where factor is a single digit or:
-#
-# <factor> ::= (<expression>)
-#
-def factor():
-    if look == "(":
-        match("(")
-        expression()
-        match(")")
-    else:
-        emitln("MOVE #" + getnum() + ",D0")
-
-#
 # handle a multiply
 #
 def multiply():
@@ -147,6 +133,37 @@ def divide():
     factor()
     emitln("MOVE (SP)+,D1")
     emitln("DIVS D1,D0")
+
+#
+# handle addition
+#
+def add():
+    match("+")
+    term()
+    emitln("ADD (SP)+,D0")
+
+#
+# handle subtraction
+#
+def subtract():
+    match("-")
+    term()
+    emitln("SUB (SP)+,D0")
+    emitln("NEG D0")
+
+#
+# parse and translate a factor
+# where factor is a single digit or:
+#
+# <factor> ::= (<expression>)
+#
+def factor():
+    if look == "(":
+        match("(")
+        expression()
+        match(")")
+    else:
+        emitln("MOVE #" + getnum() + ",D0")
 
 #
 # parse and translate a term
@@ -165,23 +182,6 @@ def term():
             divide()
         else:
             expected("mulop")
-
-#
-# handle addition
-#
-def add():
-    match("+")
-    term()
-    emitln("ADD (SP)+,D0")
-
-#
-# handle subtraction
-#
-def subtract():
-    match("-")
-    term()
-    emitln("SUB (SP)+,D0")
-    emitln("NEG D0")
 
 #
 # parse and translate an expression
