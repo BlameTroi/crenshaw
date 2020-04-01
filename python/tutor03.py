@@ -56,6 +56,7 @@ def expected(s):
 def match(x):
     if look == x:
         getchar()
+        skipwhite()
     else:
         expected("'" + x + "'")
 
@@ -98,24 +99,43 @@ def ismulop(c):
     return c[0] in ["*", "/"]
 
 #
+# recognize white space
+#
+def iswhite(c):
+    return c[0] in [" ", "\t"]
+
+#
+# skip over white space
+#
+def skipwhite():
+    while iswhite(look):
+        getchar()
+
+#
 # get an identifier
 #
 def getname():
+    t = ""
     if not isalpha(look):
         expected("Name")
-    n = look.upper()
-    getchar()
-    return n
+    while isalnum(look):
+        t = t + look
+        getchar()
+    skipwhite()
+    return t
 
 #
 # get a number
 #
 def getnum():
+    t = ""
     if not isdigit(look):
         expected("Integer")
-    n = look;
-    getchar()
-    return n
+    while isdigit(look):
+        t = t + look
+        getchar()
+    skipwhite()
+    return t
 
 #
 # handle a multiply
@@ -132,6 +152,7 @@ def divide():
     match("/")
     factor()
     emitln("MOVE (SP)+,D1")
+    emitln("EXS.L D0")
     emitln("DIVS D1,D0")
 
 #
@@ -207,22 +228,6 @@ def term():
 #
 # <expression> ::= <term> [<addop> <term>]*
 #
-# todo: failure in cases such as m=(2*7+g())
-# and m=2*(7+g()) ... problem appears to be
-# with "))", adding a +0, as in g()+0) works
-# but also seeing errors on m=3*(7+g) and
-# a few other forms that end in a right paren.
-#
-# m=3*n works
-# m=3*n+7 works
-# m=(3*n)+7 fails
-#
-# so i'm right on the paren, and it appears
-# to be unrelated to the variable n in the
-# example, as
-#
-# m=(3*4)+7 also fails
-#
 def expression():
     if isaddop(look):
         emitln("CLR D0")
@@ -234,8 +239,6 @@ def expression():
             add()
         elif look == "-":
             subtract()
-    if look != "\n":
-        expected("NewLine")
 
 #
 # parse and translate an assignment statement
@@ -264,6 +267,8 @@ def init():
 def main():
     init()
     assignment()
+    if look != "\n":
+        expected("Newline")
 
 #
 # run as script
